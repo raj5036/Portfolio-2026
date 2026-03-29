@@ -1,92 +1,6 @@
 import { useEffect } from 'react'
 import './App.css'
-
-const featuredProjects = [
-  {
-    id: '01',
-    type: 'SaaS Platform',
-    title: 'Northstar Analytics',
-    description:
-      'Dashboard experience for a B2B analytics company with custom reports, team workspaces, and a conversion-focused onboarding flow.',
-    tags: ['Next.js', 'TypeScript', 'PostgreSQL'],
-    visual: 'analytics',
-    featured: true,
-  },
-  {
-    id: '02',
-    type: 'Product Site',
-    title: 'Studio Launch System',
-    description:
-      'Narrative-driven marketing site for a creative studio with modular sections, CMS control, and premium motion details.',
-    tags: ['React', 'Motion', 'CMS'],
-    visual: 'site',
-  },
-  {
-    id: '03',
-    type: 'Internal Tool',
-    title: 'Ops Flow Console',
-    description:
-      'Internal operations tool that simplified approvals, surfaced bottlenecks, and automated repetitive admin work across teams.',
-    tags: ['Node.js', 'Automation', 'APIs'],
-    visual: 'console',
-  },
-]
-
-const principles = [
-  {
-    id: '01',
-    title: 'Product-minded execution',
-    copy: 'I bridge design taste with engineering discipline, turning early ideas into production-ready software without the usual drag.',
-  },
-  {
-    id: '02',
-    title: 'Fast feedback loops',
-    copy: 'Prototypes move quickly, but architecture still matters. I optimize for progress now without creating avoidable cleanup later.',
-  },
-  {
-    id: '03',
-    title: 'Clear collaboration',
-    copy: 'Async updates, intentional scope, and calm delivery. Great software feels better when the process does too.',
-  },
-]
-
-const stack = [
-  'TypeScript',
-  'React',
-  'Next.js',
-  'Node',
-  'Express',
-  'Postgres',
-  'Prisma',
-  'Tailwind',
-  'Docker',
-  'Vercel',
-  'Figma',
-  'OpenAI APIs',
-]
-
-const process = [
-  {
-    id: '01',
-    title: 'Shape the direction',
-    copy: 'We clarify goals, constraints, user needs, and the fastest path to a meaningful first release.',
-  },
-  {
-    id: '02',
-    title: 'Design the system',
-    copy: 'Interface patterns, content hierarchy, and the technical foundation are established together.',
-  },
-  {
-    id: '03',
-    title: 'Build with momentum',
-    copy: 'Implementation happens in focused iterations with visible progress, not black-box silence.',
-  },
-  {
-    id: '04',
-    title: 'Refine and launch',
-    copy: 'Performance, responsiveness, edge cases, and final polish bring the product across the finish line.',
-  },
-]
+import { portfolioData } from './data/portfolio'
 
 function ProjectVisual({ variant }) {
   if (variant === 'analytics') {
@@ -113,6 +27,9 @@ function ProjectVisual({ variant }) {
 }
 
 function App() {
+  const { about, brand, contact, hero, highlights, navigation, process, stack, work } =
+    portfolioData
+
   useEffect(() => {
     const nodes = document.querySelectorAll('.reveal')
     const observer = new IntersectionObserver(
@@ -144,38 +61,36 @@ function App() {
 
       <header className="site-header">
         <a className="brand" href="#top">
-          <span className="brand-mark">D</span>
+          <span className="brand-mark">{brand.mark}</span>
           <span className="brand-copy">
-            <strong>Dev Portfolio</strong>
-            <small>Independent Product Engineer</small>
+            <strong>{brand.name}</strong>
+            <small>{brand.role}</small>
           </span>
         </a>
 
         <nav className="site-nav" aria-label="Primary">
-          <a href="#work">Work</a>
-          <a href="#about">About</a>
-          <a href="#stack">Stack</a>
-          <a href="#contact">Contact</a>
+          {navigation.map((item) => (
+            <a href={item.href} key={item.label}>
+              {item.label}
+            </a>
+          ))}
         </nav>
       </header>
 
       <main id="top">
         <section className="hero section">
           <div className="hero-copy reveal">
-            <p className="eyebrow">Available for freelance and product partnerships</p>
+            <p className="eyebrow">{hero.eyebrow}</p>
             <h1>
-              Building sharp digital products with <span>taste, speed, and technical depth.</span>
+              {hero.title} <span>{hero.titleAccent}</span>
             </h1>
-            <p className="hero-text">
-              I design and ship modern web experiences for startups, studios, and founders who
-              want software that feels premium before it scales.
-            </p>
+            <p className="hero-text">{hero.description}</p>
             <div className="hero-actions">
-              <a className="button button-primary" href="#contact">
-                Start a project
+              <a className="button button-primary" href={hero.primaryAction.href}>
+                {hero.primaryAction.label}
               </a>
-              <a className="button button-secondary" href="#work">
-                See selected work
+              <a className="button button-secondary" href={hero.secondaryAction.href}>
+                {hero.secondaryAction.label}
               </a>
             </div>
           </div>
@@ -183,29 +98,23 @@ function App() {
           <div className="hero-panel reveal">
             <div className="hero-card status-card">
               <span className="dot" />
-              <p>Currently crafting performant interfaces, internal tools, and AI-ready workflows.</p>
+              <p>{highlights.status}</p>
             </div>
 
             <div className="hero-card orbit-card">
-              <p className="mini-label">Focus Areas</p>
+              <p className="mini-label">{highlights.focusEyebrow}</p>
               <div className="orbit-grid">
-                <span>Product UI</span>
-                <span>Full-Stack Apps</span>
-                <span>Design Systems</span>
-                <span>Automation</span>
+                {highlights.focusAreas.map((area) => (
+                  <span key={area}>{area}</span>
+                ))}
               </div>
             </div>
 
             <div className="hero-card signature-card">
-              <p className="vertical-name" aria-hidden="true">
-                DEVELOPER
-              </p>
+              <p className="vertical-name" aria-hidden="true">{highlights.signatureLabel}</p>
               <div>
-                <p className="mini-label">Based Anywhere</p>
-                <p className="signature-copy">
-                  Remote-first collaborator with a bias for clean code, clear communication, and
-                  interfaces people remember.
-                </p>
+                <p className="mini-label">{highlights.locationEyebrow}</p>
+                <p className="signature-copy">{highlights.signatureCopy}</p>
               </div>
             </div>
           </div>
@@ -213,7 +122,7 @@ function App() {
 
         <section className="ticker" aria-label="Core technologies">
           <div className="ticker-track">
-            {[...stack, ...stack].map((item, index) => (
+            {[...stack.items, ...stack.items].map((item, index) => (
               <span key={`${item}-${index}`}>{item}</span>
             ))}
           </div>
@@ -221,12 +130,12 @@ function App() {
 
         <section className="section" id="about">
           <div className="section-heading reveal">
-            <p className="eyebrow">About</p>
-            <h2>Built for founders who care about both polish and momentum.</h2>
+            <p className="eyebrow">{about.eyebrow}</p>
+            <h2>{about.title}</h2>
           </div>
 
           <div className="intro-panels">
-            {principles.map((item) => (
+            {about.principles.map((item) => (
               <article className="panel reveal" key={item.id}>
                 <p className="panel-index">{item.id}</p>
                 <h3>{item.title}</h3>
@@ -238,12 +147,12 @@ function App() {
 
         <section className="section work-section" id="work">
           <div className="section-heading reveal">
-            <p className="eyebrow">Selected Work</p>
-            <h2>A portfolio layout that tells a stronger story than a plain project grid.</h2>
+            <p className="eyebrow">{work.eyebrow}</p>
+            <h2>{work.title}</h2>
           </div>
 
           <div className="projects">
-            {featuredProjects.map((project) => (
+            {work.projects.map((project) => (
               <article
                 className={`project-card reveal${project.featured ? ' project-featured' : ''}`}
                 key={project.id}
@@ -269,51 +178,36 @@ function App() {
 
         <section className="section stack-section" id="stack">
           <div className="section-heading reveal">
-            <p className="eyebrow">Stack</p>
-            <h2>Tools chosen for longevity, speed, and a better build experience.</h2>
+            <p className="eyebrow">{stack.eyebrow}</p>
+            <h2>{stack.title}</h2>
           </div>
 
           <div className="stack-layout">
             <div className="stack-cloud reveal">
-              {stack.map((item) => (
+              {stack.items.map((item) => (
                 <span key={item}>{item}</span>
               ))}
             </div>
 
             <div className="stack-notes">
-              <article className="note-card reveal">
-                <p className="mini-label">Frontend</p>
-                <p>
-                  Design-forward interfaces with careful motion, strong hierarchy, and accessible
-                  interactions.
-                </p>
-              </article>
-              <article className="note-card reveal">
-                <p className="mini-label">Backend</p>
-                <p>
-                  Reliable APIs, clean schemas, automation hooks, and infrastructure that can grow
-                  with the product.
-                </p>
-              </article>
-              <article className="note-card reveal">
-                <p className="mini-label">AI Layer</p>
-                <p>
-                  Practical workflow automation and LLM integrations that support real product
-                  outcomes.
-                </p>
-              </article>
+              {stack.notes.map((note) => (
+                <article className="note-card reveal" key={note.title}>
+                  <p className="mini-label">{note.title}</p>
+                  <p>{note.copy}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
         <section className="section process-section">
           <div className="section-heading reveal">
-            <p className="eyebrow">Process</p>
-            <h2>A clean path from rough idea to launch-ready product.</h2>
+            <p className="eyebrow">{process.eyebrow}</p>
+            <h2>{process.title}</h2>
           </div>
 
           <div className="timeline">
-            {process.map((step) => (
+            {process.steps.map((step) => (
               <article className="timeline-item reveal" key={step.id}>
                 <span>{step.id}</span>
                 <div>
@@ -327,33 +221,25 @@ function App() {
 
         <section className="section contact-section" id="contact">
           <div className="contact-card reveal">
-            <p className="eyebrow">Contact</p>
-            <h2>Need a portfolio, product site, or app that feels considered?</h2>
-            <p>
-              This React build is ready to personalize. Swap in your name, projects, links, and
-              contact details, and you have a strong modern portfolio foundation.
-            </p>
+            <p className="eyebrow">{contact.eyebrow}</p>
+            <h2>{contact.title}</h2>
+            <p>{contact.description}</p>
 
             <div className="contact-actions">
-              <a className="button button-primary" href="mailto:hello@example.com">
-                hello@example.com
+              <a className="button button-primary" href={contact.primary.href}>
+                {contact.primary.label}
               </a>
-              <a
-                className="button button-secondary"
-                href="https://github.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
-              <a
-                className="button button-secondary"
-                href="https://www.linkedin.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                LinkedIn
-              </a>
+              {contact.links.map((link) => (
+                <a
+                  className="button button-secondary"
+                  href={link.href}
+                  key={link.label}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
         </section>
