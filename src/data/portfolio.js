@@ -21,7 +21,7 @@ export const portfolioData = {
     titleAccent: 'Senior Full Stack Engineer',
     description:
       'I am Raj Karmakar, a full stack engineer experienced in building product platforms, design systems, integrations, and cloud-backed applications for remote teams across the United States, Norway, and India.',
-    assistantPlaceholder: 'Ask me anything about Raj...',
+    assistantPlaceholder: 'Ask anything about Raj...',
     primaryAction: {
       label: 'Get in touch',
       href: '#contact',
@@ -29,6 +29,14 @@ export const portfolioData = {
     secondaryAction: {
       label: 'See selected work',
       href: '#work',
+    },
+    chatbot: {
+      placeholder: 'Ask anything about Raj...',
+      suggestionChips: ['What do you do?', 'Work', 'Skills', 'Contact'],
+      welcomeAnswer:
+        'Ask about my work, skills, current role, or how to contact me. I can give a quick summary right here.',
+      fallbackAnswer:
+        'I can answer simple questions about my work, skills, experience, and contact details. Try asking about work, skills, current role, or contact.',
     },
   },
   highlights: {
@@ -156,7 +164,7 @@ export const portfolioData = {
   },
   contact: {
     eyebrow: 'Contact',
-    title: 'Let’s build web products that are polished, performant, and ready to scale.',
+    title: "Let's build web products that are polished, performant, and ready to scale.",
     description:
       'Reach out for full stack engineering, frontend systems, integrations, or cloud-backed product development.',
     primary: {

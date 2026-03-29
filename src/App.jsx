@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { portfolioData } from './data/portfolio'
 
@@ -63,6 +63,62 @@ function ThemeIcon({ theme }) {
   )
 }
 
+function buildChatAnswer(question, data) {
+  const normalized = question.trim().toLowerCase()
+  const { contact, hero, process, stack, work } = data
+
+  if (
+    normalized.includes('what do you do') ||
+    normalized.includes('what can you do') ||
+    normalized.includes('help') ||
+    normalized.includes('about you')
+  ) {
+    return `${hero.description} I mainly work across frontend systems, backend services, integrations, and cloud-backed product delivery.`
+  }
+
+  if (
+    normalized.includes('work') ||
+    normalized.includes('project') ||
+    normalized.includes('built') ||
+    normalized.includes('experience')
+  ) {
+    return `I currently work on ${work.projects[0].title} and previously built products like ${work.projects[1].title} and ${work.projects[2].title}. ${process.steps[0].copy}`
+  }
+
+  if (
+    normalized.includes('skill') ||
+    normalized.includes('stack') ||
+    normalized.includes('technology') ||
+    normalized.includes('tech')
+  ) {
+    return `My core stack includes ${stack.items.slice(0, 8).join(', ')}. I also work with ${stack.items.slice(8).join(', ')}.`
+  }
+
+  if (
+    normalized.includes('contact') ||
+    normalized.includes('email') ||
+    normalized.includes('phone') ||
+    normalized.includes('reach')
+  ) {
+    return `You can reach me at ${contact.primary.label} or call me at ${contact.links[0].label}. You can also find me on GitHub, LinkedIn, and my portfolio from the contact section.`
+  }
+
+  if (
+    normalized.includes('current') ||
+    normalized.includes('job') ||
+    normalized.includes('role') ||
+    normalized.includes('recostar')
+  ) {
+    return highlightsText(data)
+  }
+
+  return hero.chatbot.fallbackAnswer
+}
+
+function highlightsText(data) {
+  return `${data.highlights.status} ${data.process.steps[0].copy}`
+}
+
 function App() {
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') {
@@ -79,6 +135,15 @@ function App() {
   })
   const { about, brand, contact, headerCta, hero, highlights, navigation, process, stack, work } =
     portfolioData
+  const [chatInput, setChatInput] = useState('')
+  const [chatMessages, setChatMessages] = useState([
+    {
+      id: 'welcome-answer',
+      role: 'assistant',
+      text: hero.chatbot.welcomeAnswer,
+    },
+  ])
+  const chatBodyRef = useRef(null)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -108,6 +173,42 @@ function App() {
 
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight
+    }
+  }, [chatMessages])
+
+  function submitQuestion(rawQuestion) {
+    const question = rawQuestion.trim()
+
+    if (!question) {
+      return
+    }
+
+    const answer = buildChatAnswer(question, portfolioData)
+
+    setChatMessages((current) => [
+      ...current,
+      {
+        id: `${Date.now()}-user`,
+        role: 'user',
+        text: question,
+      },
+      {
+        id: `${Date.now()}-assistant`,
+        role: 'assistant',
+        text: answer,
+      },
+    ])
+    setChatInput('')
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    submitQuestion(chatInput)
+  }
 
   return (
     <div className="page-shell">
@@ -181,7 +282,44 @@ function App() {
             <p className="hero-text">{hero.description}</p>
 
             <div className="hero-console">
-              <p>{hero.assistantPlaceholder}</p>
+              <div className="chatbot-shell">
+                <div className="chatbot-body" ref={chatBodyRef}>
+                  {chatMessages.map((message) => (
+                    <div
+                      className={`chat-row ${message.role === 'user' ? 'is-user' : 'is-assistant'}`}
+                      key={message.id}
+                    >
+                      <div className={`chat-bubble ${message.role}`}>{message.text}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="chatbot-suggestions">
+                  {hero.chatbot.suggestionChips.map((chip) => (
+                    <button
+                      className="chat-chip"
+                      key={chip}
+                      onClick={() => submitQuestion(chip)}
+                      type="button"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+
+                <form className="chatbot-form" onSubmit={handleSubmit}>
+                  <input
+                    className="chatbot-input"
+                    onChange={(event) => setChatInput(event.target.value)}
+                    placeholder={hero.chatbot.placeholder}
+                    type="text"
+                    value={chatInput}
+                  />
+                  <button className="chatbot-send" type="submit">
+                    Ask
+                  </button>
+                </form>
+              </div>
             </div>
 
             <div className="hero-actions">
