@@ -10,12 +10,18 @@ export const portfolioData = {
     { label: 'Stack', href: '#stack' },
     { label: 'Contact', href: '#contact' },
   ],
+  headerCta: {
+    label: 'Book a Call',
+    href: 'mailto:97rajmath@gmail.com?subject=Let%27s%20work%20together',
+  },
   hero: {
     eyebrow: 'Senior Full Stack Engineer | React, Node.js, AWS',
-    title: 'Building scalable digital products with',
-    titleAccent: 'strong frontend craft and dependable backend systems.',
+    greeting: "Hi, I'm",
+    title: 'Raj Karmakar',
+    titleAccent: 'Senior Full Stack Engineer',
     description:
       'I am Raj Karmakar, a full stack engineer experienced in building product platforms, design systems, integrations, and cloud-backed applications for remote teams across the United States, Norway, and India.',
+    assistantPlaceholder: 'Ask me anything about Raj...',
     primaryAction: {
       label: 'Get in touch',
       href: '#contact',

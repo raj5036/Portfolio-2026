@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { portfolioData } from './data/portfolio'
 
@@ -26,9 +26,64 @@ function ProjectVisual({ variant }) {
   return <div className="project-visual visual-console" aria-hidden="true" />
 }
 
+function ThemeIcon({ theme }) {
+  if (theme === 'dark') {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path
+          d="M14.5 3a8.5 8.5 0 1 0 8.5 8.5A6.5 6.5 0 0 1 14.5 3Z"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.8"
+        />
+      </svg>
+    )
+  }
+
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <circle
+        cx="12"
+        cy="12"
+        r="4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M12 2.5v2.3M12 19.2v2.3M4.8 4.8l1.6 1.6M17.6 17.6l1.6 1.6M2.5 12h2.3M19.2 12h2.3M4.8 19.2l1.6-1.6M17.6 6.4l1.6-1.6"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  )
+}
+
 function App() {
-  const { about, brand, contact, hero, highlights, navigation, process, stack, work } =
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') {
+      return 'dark'
+    }
+
+    const savedTheme = window.localStorage.getItem('theme')
+
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+  const { about, brand, contact, headerCta, hero, highlights, navigation, process, stack, work } =
     portfolioData
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem('theme', theme)
+  }, [theme])
 
   useEffect(() => {
     const nodes = document.querySelectorAll('.reveal')
@@ -60,31 +115,75 @@ function App() {
       <div className="ambient ambient-b" />
 
       <header className="site-header">
-        <a className="brand" href="#top">
-          <span className="brand-mark">{brand.mark}</span>
-          <span className="brand-copy">
-            <strong>{brand.name}</strong>
-            <small>{brand.role}</small>
-          </span>
-        </a>
+        <button
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          className="theme-toggle"
+          onClick={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
+          type="button"
+        >
+          <ThemeIcon theme={theme} />
+        </button>
 
         <nav className="site-nav" aria-label="Primary">
-          {navigation.map((item) => (
-            <a href={item.href} key={item.label}>
+          {navigation.map((item, index) => (
+            <a
+              className={index === 0 ? 'site-nav-link is-active' : 'site-nav-link'}
+              href={item.href}
+              key={item.label}
+            >
               {item.label}
             </a>
           ))}
         </nav>
+
+        <a className="header-cta" href={headerCta.href}>
+          <span className="header-cta-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect
+                x="3.5"
+                y="5.5"
+                width="17"
+                height="15"
+                rx="2.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              />
+              <path
+                d="M8 3.5v4M16 3.5v4M3.5 10.5h17"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="1.8"
+              />
+            </svg>
+          </span>
+          {headerCta.label}
+        </a>
       </header>
 
       <main id="top">
         <section className="hero section">
-          <div className="hero-copy reveal">
-            <p className="eyebrow">{hero.eyebrow}</p>
-            <h1>
-              {hero.title} <span>{hero.titleAccent}</span>
-            </h1>
+          <div className="hero-stage reveal">
+            <p className="eyebrow hero-eyebrow">{hero.eyebrow}</p>
+
+            <div className="hero-avatar" aria-hidden="true">
+              <span>{brand.mark}</span>
+            </div>
+
+            <div className="hero-heading">
+              <h1>
+                {hero.greeting} <span>{hero.title}</span>
+              </h1>
+              <p className="hero-role">{hero.titleAccent}</p>
+            </div>
+
             <p className="hero-text">{hero.description}</p>
+
+            <div className="hero-console">
+              <p>{hero.assistantPlaceholder}</p>
+            </div>
+
             <div className="hero-actions">
               <a className="button button-primary" href={hero.primaryAction.href}>
                 {hero.primaryAction.label}
@@ -95,7 +194,7 @@ function App() {
             </div>
           </div>
 
-          <div className="hero-panel reveal">
+          <div className="hero-panel-grid reveal">
             <div className="hero-card status-card">
               <span className="dot" />
               <p>{highlights.status}</p>
@@ -111,7 +210,9 @@ function App() {
             </div>
 
             <div className="hero-card signature-card">
-              <p className="vertical-name" aria-hidden="true">{highlights.signatureLabel}</p>
+              <p className="vertical-name" aria-hidden="true">
+                {highlights.signatureLabel}
+              </p>
               <div>
                 <p className="mini-label">{highlights.locationEyebrow}</p>
                 <p className="signature-copy">{highlights.signatureCopy}</p>

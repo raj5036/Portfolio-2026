@@ -8,10 +8,10 @@ body {
   min-height: 100vh;
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(216, 255, 114, 0.12), transparent 30%),
+    radial-gradient(circle at top left, rgba(141, 104, 255, 0.12), transparent 28%),
     radial-gradient(circle at top right, rgba(135, 231, 255, 0.12), transparent 32%),
-    linear-gradient(180deg, #0c0e11 0%, #12161b 50%, #0d0f12 100%);
-  color: #f5f1e8;
+    linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg-soft) 42%, var(--bg) 100%);
+  color: var(--text);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
